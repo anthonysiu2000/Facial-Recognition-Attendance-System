@@ -1,4 +1,6 @@
 import cv2 as cv
+import face_recognition as fr
+
 
 # Read image from your local file system
 original_image = cv.imread('C:/Users/tonys/Downloads/jonSample.jpg')
@@ -7,7 +9,9 @@ original_image = cv.imread('C:/Users/tonys/Downloads/jonSample.jpg')
 grayscale_image = cv.cvtColor(original_image, cv.COLOR_BGR2GRAY)
 
 # Load the classifier and create a cascade object for face detection
-face_cascade = cv.CascadeClassifier('./haarcascade_frontalface_alt.xml')
+# face_cascade = cv.CascadeClassifier("./haarcascade_frontalface_alt.xml")
+face_cascade = cv.CascadeClassifier("D:/Code/PYTHONSTUFF/Capstone/haarcascade_frontalface_alt.xml")
+
 
 detected_faces = face_cascade.detectMultiScale(grayscale_image)
 
