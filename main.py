@@ -43,8 +43,11 @@ while True:
     #obtain current frame
     success, img = cap.read()
 
+    #larger resolution for screen
+    img = cv.resize(img, (0,0), None, 2, 2)
+
     #decrease frame size in order to help with computation
-    imgS = cv.resize(img, (0,0), None, 0.25, 0.25)
+    imgS = cv.resize(img, (0,0), None, 0.125, 0.125)
     imgS = cv.cvtColor(imgS, cv.COLOR_BGR2RGB)
 
     #encodes our video capture, with face locations found to assist with computation
@@ -63,7 +66,7 @@ while True:
         if matches[matchIndex]:
             name = studentNames[matchIndex].upper()
             y1,x2,y2,x1 = faceLoc
-            y1,x2,y2,x1 = y1*4,x2*4,y2*4,x1*4
+            y1,x2,y2,x1 = y1*8,x2*8,y2*8,x1*8
 
             #Draws facial rectangle
             cv.rectangle(img, (x1,y1), (x2,y2), (0,255,0), 2)
