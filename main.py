@@ -64,9 +64,13 @@ while True:
             name = studentNames[matchIndex].upper()
             y1,x2,y2,x1 = faceLoc
             y1,x2,y2,x1 = y1*4,x2*4,y2*4,x1*4
+
+            #Draws facial rectangle
             cv.rectangle(img, (x1,y1), (x2,y2), (0,255,0), 2)
+            #Draws filled in rectangle at bottom of rectangle for text
             cv.rectangle(img, (x1, y2-35), (x2,y2), (0,255,0), cv.FILLED)
-            cv.putText(img, name, (x1+6, y2-6), cv.FONT_HERSHEY_COMPLEX, 1, (255,0,255), 2)
+            #Draws text
+            cv.putText(img, name, (x1+6, y2-6), cv.FONT_HERSHEY_COMPLEX, 1, (255,255,255), 2)
 
     
     cv.imshow('Webcam', img)
