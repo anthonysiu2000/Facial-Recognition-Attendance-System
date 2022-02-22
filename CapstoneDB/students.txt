@@ -1,0 +1,4 @@
+ruid first_name last_name
+185000001 Jonathan Wong
+185000002 Benjamin Lee
+185000003 Ian Li
