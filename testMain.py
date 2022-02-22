@@ -9,7 +9,7 @@ from os.path import dirname, join
 
 current_dir = dirname(__file__)
 file_path = join(current_dir, "./testImages/obama.jpg")
-file_path2 = join(current_dir, "./testImages/obama2.jpg")
+file_path2 = join(current_dir, "./testImages/HIMYM.jpg")
 
 picObama = fr.load_image_file(file_path)
 picObama = cv.cvtColor(picObama, cv.COLOR_BGR2RGB)
