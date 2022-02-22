@@ -56,7 +56,6 @@ cap = cv.VideoCapture(0)
 while True:
     #obtain current frame
     success, imgL = cap.read()
-
     #larger resolution for screen
     imgL = cv.resize(imgL, (0,0), None, 2, 2)
 
@@ -79,8 +78,8 @@ while True:
         matchIndex = np.argmin(faceDis)
         if matches[matchIndex]:
             name = studentNames[matchIndex].upper()
-            name = name + " " + "{:.5f}".format(faceDis[matchIndex])
             markAttendance(name)
+            name = name + " " + "{:.5f}".format(faceDis[matchIndex])
             y1,x2,y2,x1 = faceLoc
             y1,x2,y2,x1 = y1*8,x2*8,y2*8,x1*8
 
@@ -101,8 +100,20 @@ while True:
             cv.rectangle(imgL, (x1, y2-35), (x2,y2), (0,255,0), cv.FILLED)
             #Draws text
             cv.putText(imgL, name, (x1+6, y2-6), cv.FONT_HERSHEY_COMPLEX, 1, (255,255,255), 2)
+    
+    #attendance image
+    attImg = np.zeros((800,800,3), np.uint8)
+    with open(os.path.join(current_dir,'Attendance.csv'), 'r+') as f:
+        myDataList = f.readlines()
+        #creates a list of names from the file, to be used to compare against new names
+        for i, line in enumerate(myDataList):
+            entry = line.split(',')
+            entryLine = entry[0] + " " + entry[1]
+            cv.putText(attImg, entryLine, (10, 30 + 30 * i), cv.FONT_HERSHEY_COMPLEX, 1, (255,255,255), 2)
+
 
     
     cv.imshow('Webcam', imgL)
+    cv.imshow('Attendance', attImg)
     cv.waitKey(1)
     
