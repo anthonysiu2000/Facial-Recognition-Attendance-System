@@ -59,3 +59,5 @@ conn.commit()
 
 # close connection
 conn.close()
+
+print("finished schema")
