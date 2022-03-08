@@ -6,6 +6,12 @@ import numpy as np
 import face_recognition as fr
 import os
 
+#ATTENDANCE.CSV SHOULD BE EMPTY
+#ATTENDANCE_TRACKER.DB SHOULD NOT EXIST
+#RUN SCHEMA.PY
+#RUN ADDSTUDENTENROLLMENTS.PY
+
+
 #obtains the folder/database with attendance images
 current_dir = os.path.dirname(__file__)
 path = os.path.join(current_dir, "./baseImages")
@@ -80,7 +86,7 @@ def markAttendance(name):
         
 
 
-
+"""
             
 def addStudents(names, encodings, ruIDs, cursor):# students
     studentList = []
@@ -98,7 +104,7 @@ def addStudents(names, encodings, ruIDs, cursor):# students
 
     # insert enrollments
     c.executemany("INSERT INTO Enrollments values (?, ?, ?)", enrollmentList)
-
+"""
 #primary function calls
 loadImages()
 encodeList = findEncodings(images)
@@ -110,7 +116,7 @@ for i in range(len(encodeList)):
 cap = cv.VideoCapture(0)
 
 
-
+"""
 
 #Hard-coded course ID for now. Change later to allow choice of course with GUI
 courseID = "14:332:448"
@@ -123,7 +129,7 @@ c.execute("INSERT INTO Courses values (?, ?, ?)", temp)
 #Adding students and enrollment connections 
 addStudents(studentNames, encodeList, ruIDs, c)
 
-
+"""
 
 #Students should be added to the database outside of this script in students.txt
 #They should not be added while attendance system is active
