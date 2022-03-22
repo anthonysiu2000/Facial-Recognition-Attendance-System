@@ -1,5 +1,6 @@
 import pickle
 import sqlite3
+import os
 
 # employee db for testing
 conn = sqlite3.connect('attendance_tracker.db')
@@ -7,10 +8,14 @@ conn = sqlite3.connect('attendance_tracker.db')
 c = conn.cursor()
 
 # parse text file
-student_data = open('students.txt', 'r')
-course_data = open('courses.txt', 'r')
-lecture_data = open('lectures.txt', 'r')
-enrollment_data = open('enrollments.txt', 'r')
+#obtains the folder/database with attendance images
+current_dir = os.path.dirname(__file__)
+path = os.path.join(current_dir, "./CapstoneDB")
+
+student_data = open(os.path.join(current_dir, 'students.txt'), 'r')
+course_data = open(os.path.join(current_dir, 'courses.txt'), 'r')
+lecture_data = open(os.path.join(current_dir, 'lectures.txt'), 'r')
+enrollment_data = open(os.path.join(current_dir, 'enrollments.txt'), 'r')
 
 
 student_list = []
