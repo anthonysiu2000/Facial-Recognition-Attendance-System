@@ -40,7 +40,7 @@ def findEncodings(images):
 loadImages()
 encodeList = findEncodings(images)
 for i in range(len(encodeList)):
-    ruIDs.append(str(180000000+i))
+    ruIDs.append(str(170000000+i))
 
 names = studentNames
 studentList = []

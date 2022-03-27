@@ -1,8 +1,9 @@
 from tkinter import *
 from tkinter import font
 import sqlite3
-import pickle
-from turtle import width
+
+from numpy import empty
+from main import main
 
 
 
@@ -42,6 +43,8 @@ class GUI(Tk):
     #by extracting the page name from the dictionary
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
+        if page_name == "Courses":
+            self.frames["CourseAttendance"].delLists()
         frame = self.frames[page_name]
         frame.tkraise()
 
@@ -118,7 +121,9 @@ class Courses(Frame):
         #Widgets
         self.courseList = StringVar()
         Label(self, text="Courses", font=controller.title_font).grid(row = 1, sticky = "we", columnspan=3)
-        Listbox(self, height = 10, listvariable = self.courseList).grid(columnspan=2, row = 2, rowspan=5, sticky = "we")
+        coursebox = Listbox(self, height = 10, listvariable = self.courseList)
+        coursebox.grid(columnspan=2, row = 2, rowspan=5, sticky = "we")
+
         self.refreshCourses()
         
         entry = Entry(self, textvariable = StringVar())
@@ -127,17 +132,38 @@ class Courses(Frame):
         buttonA = Button(self, text="Add Course")
         buttonA.grid(column = 2, row = 3, padx = 5)
         
-        buttonC = Button(self, text="Start Tracking for Current Course")
+        buttonC = Button(self, text="Start Tracking for Current Course",
+                           command=lambda: self.stream(coursebox.curselection()[0]))
         buttonC.grid(column = 2, row = 4, padx = 5)
 
         buttonC = Button(self, text="Check Current Course's Attendance",
-                           command=lambda: controller.show_frame("CourseAttendance"))
+                           command=lambda: self.goToCourseAttendance(coursebox.curselection()[0]))
         buttonC.grid(column = 2, row = 5, padx = 5)
 
         buttonB = Button(self, text="Back",
                            command=lambda: controller.show_frame("Main"))
         buttonB.grid(column = 2, row = 6, padx = 5)
+    
+
+    def stream(self, index):
+        conn = sqlite3.connect('attendance_tracker.db')
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+
+        c.execute("SELECT * FROM Courses")
+        courses = []
+        for r in c.fetchall():
+            courses.append((r["course_id"],r["section"]))
+
+        self.controller.frames["CourseAttendance"].refreshDates(courses[index][0], courses[index][1])
         
+        main(courses[index][0], courses[index][1])
+
+        conn.commit()
+        conn.close()
+
+
+
     def refreshCourses(self):
         conn = sqlite3.connect('attendance_tracker.db')
         conn.row_factory = sqlite3.Row
@@ -150,6 +176,21 @@ class Courses(Frame):
         conn.commit()
         conn.close()
         self.courseList.set(courses)
+    
+    def goToCourseAttendance(self, index):
+        conn = sqlite3.connect('attendance_tracker.db')
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+
+        c.execute("SELECT * FROM Courses")
+        courses = []
+        for r in c.fetchall():
+            courses.append((r["course_id"],r["section"]))
+        self.controller.frames["CourseAttendance"].refreshDates(courses[index][0], courses[index][1])
+        self.controller.show_frame("CourseAttendance")
+        conn.commit()
+        conn.close()
+
 
 class CourseAttendance(Frame):
     
@@ -163,33 +204,64 @@ class CourseAttendance(Frame):
 
         #Widgets
         self.dateList = StringVar()
+        self.presentList = StringVar()
+        self.absentList = StringVar()
         Label(self, text="Course Attendance", font=controller.title_font).grid(row = 1, sticky = "we", columnspan=2)
-        Listbox(self, height = 10, listvariable = self.dateList).grid(row = 2, rowspan=7, sticky = "we")
-        self.refreshDates()
-        
-        
+        datebox = Listbox(self, height = 10, listvariable = self.dateList)
+        datebox.grid(row = 2, rowspan=7, sticky = "wse")
+        datebox.bind("<<ListboxSelect>>", lambda e: self.getAttendances(datebox.curselection()))
+
         Label(self, text="Present Students").grid(column = 1, row = 2, sticky = "we")
-        Listbox(self, height = 4).grid(column = 1, row = 3, rowspan=2, sticky = "we")
+        Listbox(self, height = 4, listvariable = self.presentList).grid(column = 1, row = 3, rowspan=2, sticky = "wse")
         Label(self, text="Absent Students").grid(column = 1, row = 5, sticky = "we")
-        Listbox(self, height = 4).grid(column = 1, row = 6, rowspan=2, sticky = "we")
+        Listbox(self, height = 4, listvariable = self.absentList).grid(column = 1, row = 6, rowspan=2, sticky = "wse")
 
 
         buttonB = Button(self, text="Back",
                            command=lambda: controller.show_frame("Courses"))
         buttonB.grid(column = 2, row = 8, padx = 5)
         
-    def refreshDates(self):
+    def refreshDates(self, courseID, courseSection):
         conn = sqlite3.connect('attendance_tracker.db')
         conn.row_factory = sqlite3.Row
         c = conn.cursor()
 
-        c.execute("SELECT * FROM Courses")
-        courses = []
+        c.execute("SELECT DISTINCT day FROM Lectures WHERE course_id=\"" + courseID + "\" AND section=" + str(courseSection))
+        self.dates = []
         for r in c.fetchall():
-            courses.append(r["course_id"] + " S" + str(r["section"]) + " "+ r["course_name"])
+            self.dates.append(r["day"])
         conn.commit()
         conn.close()
-        self.dateList.set(courses)
+        self.courseID = courseID
+        self.courseSection = courseSection
+        self.dateList.set(self.dates)
+
+    def getAttendances(self, currentS):
+        if not currentS:
+            return
+
+        conn = sqlite3.connect('attendance_tracker.db')
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+
+        c.execute("SELECT * FROM Lectures WHERE course_id=\"" + self.courseID + "\" AND section=" + str(self.courseSection) + " AND day=\"" + str(self.dates[currentS[0]]) + "\"")
+        ids = []
+        for r in c.fetchall():
+            ids.append(r["ruid"])
+        self.presentList.set(ids)
+        c.execute("SELECT ruid FROM Enrollments WHERE course_id=\"" + self.courseID + "\" AND section=" + str(self.courseSection) + " AND ruid NOT IN ("
+            "SELECT ruid FROM Lectures WHERE course_id=\"" + self.courseID + "\" AND section=" + str(self.courseSection) + " AND day=\"" + str(self.dates[currentS[0]]) + "\")")
+        absentids = []
+        for r in c.fetchall():
+            absentids.append(r["ruid"])
+        self.absentList.set(absentids)
+        
+        conn.commit()
+        conn.close()
+    
+    def delLists(self):
+        self.presentList.set([])
+        self.absentList.set([])
 
 #starts up the gui by initializing the top level class
 if __name__ == "__main__":
