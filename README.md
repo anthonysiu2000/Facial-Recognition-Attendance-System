@@ -1,10 +1,13 @@
 "# Facial-Recognition-Attendance-System" 
 
+
 This primary objective of this project was to develop an online application in order to create an automated attendance system for classrooms, businesses, etc.
 
 The tools necessary to build this project were primarily the use of Python and several associated packages. 
 This included "sqlite", a package to allows us to create a disk-based database without the need for a server, and allowing for SQL queries.
 This also included 
+
+
 
 Steps for starting project:
 
