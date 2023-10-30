@@ -1,4 +1,4 @@
-"# Facial-Recognition-Attendance-System" 
+# Facial-Recognition-Attendance-System
 
 
 This primary objective of this project was to develop an online application in order to create an automated attendance system for classrooms, businesses, etc.
@@ -9,7 +9,7 @@ This also included "face_recognition", the primary source of our facial recognit
 
 
 
-Steps for starting project:
+# Steps for starting project:
 
 Before each run, ensure that there is no file in the main folder titled attendance_tracker.db, and ensure that the Attendance.csv file is empty, save for the subject title
 
@@ -18,7 +18,7 @@ Before each run, ensure that there is no file in the main folder titled attendan
 3. Run addStudentsEnrollments.py in order to add these images into the database.
 4. Run gui.py
 
-Steps for Functionality testing:
+# Steps for Functionality testing:
 
 1. Click on Students to add students based on id and name.
 2. Click on Courses to add new courses, check the attendance for a particular course, or most importantly, start facial tracking for a particular course'
