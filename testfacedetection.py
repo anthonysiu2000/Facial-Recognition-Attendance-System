@@ -10,7 +10,7 @@ import os
 
 #obtains the folder/database with attendance images
 current_dir = os.path.dirname(__file__)
-path = os.path.join(current_dir, "./lfwtest")
+path = os.path.join(current_dir, "./lfw")
 
 #sets up storage for images and students, respectively
 studentNames = []

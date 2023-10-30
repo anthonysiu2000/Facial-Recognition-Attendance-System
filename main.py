@@ -10,6 +10,9 @@ import os
 #ATTENDANCE_TRACKER.DB SHOULD NOT EXIST
 #RUN SCHEMA.PY
 #RUN ADDSTUDENTENROLLMENTS.PY
+
+
+
 def main(courseID, courseSection):
 
     #obtains the folder/database with attendance images
@@ -214,5 +217,6 @@ def main(courseID, courseSection):
     conn.close()
     cap.release()
     print("connection closed")
+    return
 
 #main(None,None)
